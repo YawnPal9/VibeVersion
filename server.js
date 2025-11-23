@@ -6,12 +6,21 @@ const PORT = 5000;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+app.use((req, res, next) => {
+  res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+  res.setHeader('Pragma', 'no-cache');
+  res.setHeader('Expires', '0');
+  next();
+});
+
 app.use(express.static('.'));
 
 let connectionSettings;
+let cachedSpreadsheetId = null;
 
 async function getAccessToken() {
-  if (connectionSettings && connectionSettings.settings.expires_at && new Date(connectionSettings.settings.expires_at).getTime() > Date.now()) {
+  if (connectionSettings && connectionSettings.settings?.expires_at && new Date(connectionSettings.settings.expires_at).getTime() > Date.now()) {
     return connectionSettings.settings.access_token;
   }
   
@@ -36,7 +45,7 @@ async function getAccessToken() {
     }
   ).then(res => res.json()).then(data => data.items?.[0]);
 
-  const accessToken = connectionSettings?.settings?.access_token || connectionSettings.settings?.oauth?.credentials?.access_token;
+  const accessToken = connectionSettings?.settings?.access_token || connectionSettings?.settings?.oauth?.credentials?.access_token;
 
   if (!connectionSettings || !accessToken) {
     throw new Error('Google Sheet not connected');
@@ -89,12 +98,14 @@ async function createSpreadsheet() {
 }
 
 async function addEmailToSheet(email) {
+  const normalizedEmail = email.trim().toLowerCase();
   const sheets = await getUncachableGoogleSheetClient();
   
-  let spreadsheetId = SPREADSHEET_ID;
+  let spreadsheetId = cachedSpreadsheetId || SPREADSHEET_ID;
   
   if (!spreadsheetId) {
     spreadsheetId = await createSpreadsheet();
+    cachedSpreadsheetId = spreadsheetId;
   }
   
   const existingEmails = await sheets.spreadsheets.values.get({
@@ -103,7 +114,7 @@ async function addEmailToSheet(email) {
   });
   
   const emails = existingEmails.data.values || [];
-  const emailExists = emails.some(row => row[0] === email);
+  const emailExists = emails.some(row => row[0] && row[0].toLowerCase() === normalizedEmail);
   
   if (emailExists) {
     return { success: false, message: 'Email already submitted!' };
@@ -116,7 +127,7 @@ async function addEmailToSheet(email) {
     range: 'User Emails!A:B',
     valueInputOption: 'USER_ENTERED',
     requestBody: {
-      values: [[email, timestamp]]
+      values: [[normalizedEmail, timestamp]]
     }
   });
   
@@ -131,12 +142,13 @@ app.post('/submit-email', async (req, res) => {
       return res.status(400).json({ success: false, message: 'Email is required' });
     }
     
+    const normalizedEmail = email.trim();
     const emailRegex = /\S+@\S+\.\S+/;
-    if (!emailRegex.test(email)) {
+    if (!emailRegex.test(normalizedEmail)) {
       return res.status(400).json({ success: false, message: 'Invalid email address' });
     }
     
-    const result = await addEmailToSheet(email);
+    const result = await addEmailToSheet(normalizedEmail);
     
     if (result.success) {
       res.json(result);
