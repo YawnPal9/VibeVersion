@@ -28,4 +28,4 @@ function doPost(e) {
       return ContentService.createTextOutput("Email already submitted.");
     }
 
-    // App
+// App
