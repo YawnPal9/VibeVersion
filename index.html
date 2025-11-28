@@ -6,8 +6,6 @@
   <!-- Meta -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width" , initial-scale=1.0">
-  <!-- Styles -->
-  <link href="style.css" rel="stylesheet" type="text/css" />
   <!-- Fonts -->
   <link rel="stylesheet"
     href="https://fonts.googleapis.com/css?family=Inconsolata|Fira+Mono|Jersey+20+Charted|Press+Start+2P|Rampart+One|Rye|Satisfy|Share+Tech+Mono|Titillium+Web|Rubik+Broken+Fax||Rubik+Scribble&display=swap">
@@ -104,34 +102,37 @@
       <span id="emp">This page's format surrounds a display of my personal skills and interests to further support my
         passions and ambitions within the CS industry and others incorporated.</span>
     </p>
-    <form>
-      <input type="email" placeholder="Your email" required>
+    <form id="emailForm">
+      <input type="email" id="email" placeholder="Your email" required>
       <input type="submit" value="Connect">
     </form>
+    <p id="feedback" style="margin-top: 10px; font-weight: bold;"></p>
   </div>
   <script>
     document.getElementById('emailForm').addEventListener('submit', function (e) {
-      e.preventDefault(); // Prevent form submission
+      e.preventDefault();
 
-      var email = document.getElementById('email').value;
-      var url = 'YOUR_WEB_APP_URL'; // Replace with your Google Apps Script web app URL
+      const email = document.getElementById('email').value;
+      const feedback = document.getElementById('feedback');
 
-      var formData = new FormData();
-      formData.append('email', email);
-      formData.append('secret', 'YOUR_SECRET_KEY'); // Include the secret key
-
-      // Send the email to the Google Apps Script via POST request
-      fetch(url, {
+      fetch('/submit-email', {
         method: 'POST',
-        body: formData
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ email: email })
       })
-        .then(response => response.text())
+        .then(response => response.json())
         .then(data => {
-          document.getElementById('feedback').innerText = data; // Display feedback to the user
-          document.getElementById('email').value = ''; // Clear the input field
+          feedback.innerText = data.message;
+          feedback.style.color = data.success ? '#00ff00' : '#ff6b6b';
+          if (data.success) {
+            document.getElementById('email').value = '';
+          }
         })
         .catch(error => {
-          document.getElementById('feedback').innerText = 'Error submitting email: ' + error;
+          feedback.innerText = 'Error submitting email. Please try again.';
+          feedback.style.color = '#ff6b6b';
         });
     });
   </script>
