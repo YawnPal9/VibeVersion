@@ -2,6 +2,12 @@
 <html lang="en">
 
 <head>
+  <!--/* Adding React + ReactDom (under <head>) to my project to implement my GlassyButton.tsx component*/-->
+  <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <!--/* End of React + ReactDom setup */-->
+
   <title>Dayanah Franklin - Let's Network</title>
   <!-- Meta -->
   <meta charset="utf-8">
@@ -39,12 +45,13 @@
       padding: 20px;
       border-radius: 10px;
       display: inline-block;
-      margin: 80px auto 20px auto;
+      margin: 20px auto;
     }
 
     #emp {
       color: teal;
-      font-weight: bold;
+      font-weight: normal;
+      text-decoration: underline;
     }
 
     #opener {
@@ -58,13 +65,18 @@
       /* Light */
     }
 
-    img {
+    /* Profile image fix only */
+    .introSection img.profile-image {
       width: 150px;
       height: auto;
       border-radius: 50%;
+      margin-top: 20px;          /* pushes image slightly down */
       margin-bottom: 20px;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
     }
-
+    
     input {
       margin: 10px auto;
       padding: 10px;
@@ -86,6 +98,24 @@
 
     input[type="submit"]:hover {
       background: darkcyan;
+
+      /* Subsection text smaller than welcome header */
+      .introSection p.subsection-text {
+        font-size: 1em;          /* smaller than h1 and opener */
+        line-height: 1.4em;      
+        max-width: 500px;
+        margin: 10px auto;
+        color: #ffffffcc;         /* optional: slightly lighter for UX */
+        /* Move profile image slightly down */
+        .introSection img.profile-image {
+          width: 150px;
+          height: auto;
+          border-radius: 50%;
+          margin-bottom: 20px;
+          margin-top: 60px; /* Added to push image down from top */
+
+
+          
     }
   </style>
 </head>
@@ -93,22 +123,98 @@
 <body>
   <div class="introSection">
     <!-- Inserted image -->
-    <img src="dayanah-bg.jpg" alt="Dayanah's Profile Picture">
+    <img src="dayanah-bg.jpg" alt="Dayanah's Profile Picture" class="profile-image">
     <h1>Dayanah Franklin</h1>
     <p><span id="opener">Welcome! Are you interested? Let's connect and collaborate! </span></p>
-    <p>Hi! I'm Dayanah Franklin, a freshman student at Towson University. I am passionate about exploring opportunities
+    <p class="subsection-text">Hi! I'm Dayanah Franklin, a freshman student at Towson University. I am passionate about exploring opportunities
       in Computer Science and beyond. Let’s network and create something amazing!
-      <!-- Idea: a graphic for this as my opening text until my web's main menu/display is exposed to the user-->
       <span id="emp">This page's format surrounds a display of my personal skills and interests to further support my
         passions and ambitions within the CS industry and others incorporated.</span>
     </p>
-    <form id="emailForm">
-      <input type="email" id="email" placeholder="Your email" required>
-      <input type="submit" value="Connect">
+
+    <!-- Email input + GlassyButton in same row 
+    <form id="emailForm" style="display: flex; justify-content: center; align-items: center; margin-top: 10px;">
+      <input type="email" id="email" placeholder="Your email" required 
+        style="height: 40px; padding: 0 10px; font-size: 16px; border-top-right-radius: 0; border-bottom-right-radius: 0;"/>
+
+      <!-- Mount point for GlassyButton inline 
+      <span id="glassy-button-container" style="display: inline-block; "></span>
     </form>
+-->
+    <form id="emailForm" style="display: inline-flex; align-items: center; margin-top: 10px;">
+      <input type="email" id="email" placeholder="Your email" required
+             style="height: 40px; padding: 0 10px; font-size: 16px; border-radius: 5px;"/>
+
+      <!-- Directly mount GlassyButton here, no wrapper span -->
+      <div id="glassy-button-container"></div>
+    </form>
+
     <p id="feedback" style="margin-top: 10px; font-weight: bold;"></p>
   </div>
+
+  <!--/* GlassyButton micro-mount logic with teal color, same height as email input */-->
+  <script type="text/babel">
+    function GlassyButton({ children, onClick }) {
+      return (
+        <button
+          onClick={onClick}
+          style={{
+            height: "40px",               // same as email input
+            padding: "0 20px",
+            borderRadius: "5px",
+            border: "2px solid rgba(255,255,255,0.3)",
+            background: "teal",
+            color: "white",
+            fontSize: "16px",
+            fontWeight: "bold",
+            cursor: "pointer",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            position: "relative",
+            overflow: "hidden",
+            backdropFilter: "blur(8px)",
+            boxShadow: "0 4px 12px rgba(0,128,128,0.5)",
+            transition: "all 0.3s ease"
+          }}
+        >
+          {children}
+          <span style={{
+            position: "absolute",
+            top: "-6px",
+            left: "-6px",
+            width: "8px",
+            height: "8px",
+            borderRadius: "50%",
+            background: "white",
+            opacity: 0.7,
+            animation: "fly 2s linear infinite",
+          }} />
+        </button>
+      );
+    }
+
+
+
+    function App() {
+      const handleSubmit = () => {
+        alert("Connected!");
+        // replace with your fetch/email logic if needed
+      };
+
+      return (
+        <GlassyButton onClick={handleSubmit}>
+          Connect
+        </GlassyButton>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById("glassy-button-container")).render(<App />);
+  </script>
+  <!--/* End of GlassyButton micro-mount logic */-->
+  
   <script>
+    /*Implemented email submission logic via googlesheets integration!*/
     document.getElementById('emailForm').addEventListener('submit', function (e) {
       e.preventDefault();
 
@@ -136,43 +242,6 @@
         });
     });
   </script>
+  <!--/* End of GlassyButton.tsx micro-mount logic */-->
 </body>
-
 </html>
-
-<!-- ...
-<!DOCTYPE html>
-<head>
-  <title> Dayanah Franklin </title>
-  <style>
-  body {
-    text-align: center;
-    background: url("/assets/anna-bg.png");
-    background-size: cover;
-    background-position: center;
-    color: white;
-    font-family: helvetica;
-  }
-  p {
-    font-size: 22px;
-  }
-  input {
-    border: 0;
-    padding: 10px;
-    font-size: 18px;
-  }
-  input[type="submit"]{
-    background: red;
-    color: white;
-  }  
-  </style>
-</head>
-<body>
-  <img src="/assets/anna.png">
-  <h1>Dayanah Franklin</h1>
-  <p>Hi! I'm Dayanah Franklin, a freshman student at Towson University.     Let's network!</p>
-  <input type="email" placeholder="Your email">
-  <input type="submit">
-</body>
-
--->

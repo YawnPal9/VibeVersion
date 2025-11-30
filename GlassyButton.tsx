@@ -72,6 +72,7 @@ export function GlassyButton({ children, onClick, className = "" }: GlassyButton
   );
 }
 -->*/
+/*<!--
 <script type="text/babel">
 function GlassyButton({ children, onClick }) {
   return (
@@ -139,3 +140,142 @@ function App() {
 
 ReactDOM.createRoot(document.getElementById("glassy-button-container")).render(<App />);
 </script>
+   -->*/
+/*
+<script type="text/babel">
+function GlassyButton({ children, onClick }) {
+  return (
+    <button
+      onClick={onClick}
+      style={{
+        display: "inline-flex",
+        alignItems: "center",
+        justifyContent: "center",
+        height: "40px",
+        padding: "0 20px",
+        borderRadius: "0 5px 5px 0", // only right corners rounded
+        border: "2px solid rgba(255,255,255,0.3)",
+        borderLeft: "none",           // remove border between input & button
+        background: "teal",
+        color: "white",
+        fontSize: "16px",
+        fontWeight: "bold",
+        cursor: "pointer",
+        position: "relative",
+        overflow: "hidden",
+        backdropFilter: "blur(8px)",
+        boxShadow: "0 4px 12px rgba(0,128,128,0.5)",
+        transition: "all 0.3s ease"
+      }}
+      onMouseEnter={e => {
+        e.currentTarget.style.transform = "scale(1.05)";
+        e.currentTarget.style.boxShadow = "0 0 20px rgba(0,128,128,0.7)";
+      }}
+      onMouseLeave={e => {
+        e.currentTarget.style.transform = "scale(1)";
+        e.currentTarget.style.boxShadow = "0 4px 12px rgba(0,128,128,0.5)";
+      }}
+    >
+      {children}
+      <span
+        style={{
+          position: "absolute",
+          top: "-6px",
+          left: "-6px",
+          width: "8px",
+          height: "8px",
+          borderRadius: "50%",
+          background: "white",
+          opacity: 0.7,
+          animation: "fly 2s linear infinite"
+        }}
+      />
+      <style>{`
+        @keyframes fly {
+          0% { transform: translate(0,0); opacity:0.7; }
+          25% { transform: translate(120%,50%); opacity:0.3; }
+          50% { transform: translate(100%,120%); opacity:0.7; }
+          75% { transform: translate(-50%,100%); opacity:0.3; }
+          100% { transform: translate(0,0); opacity:0.7; }
+        }
+      `}</style>
+    </button>
+  );
+}
+
+function App() {
+  const handleSubmit = () => { alert("Connected!"); };
+  return <GlassyButton onClick={handleSubmit}>Connect</GlassyButton>;
+}
+
+ReactDOM.createRoot(document.getElementById("glassy-button-container")).render(<App />);
+</script>
+*/
+<script type="text/babel">
+function GlassyButton({ children, onClick }) {
+  return (
+    <button
+      onClick={onClick}
+      style={{
+        height: "40px",          // same as input
+        minWidth: "80px",        // roughly same as original submit
+        padding: "0 12px",       // smaller padding to match original spacing
+        borderRadius: "5px",
+        border: "2px solid rgba(255,255,255,0.3)",
+        background: "teal",
+        color: "white",
+        fontSize: "16px",
+        fontWeight: "bold",
+        cursor: "pointer",
+        position: "relative",
+        overflow: "hidden",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        boxShadow: "0 4px 12px rgba(0,128,128,0.5)",
+        transition: "all 0.3s ease"
+      }}
+      onMouseEnter={e => {
+        e.currentTarget.style.transform = "scale(1.05)";
+        e.currentTarget.style.boxShadow = "0 0 20px rgba(0,128,128,0.7)";
+      }}
+      onMouseLeave={e => {
+        e.currentTarget.style.transform = "scale(1)";
+        e.currentTarget.style.boxShadow = "0 4px 12px rgba(0,128,128,0.5)";
+      }}
+    >
+      {children}
+      <span
+        style={{
+          position: "absolute",
+          top: "-6px",
+          left: "-6px",
+          width: "8px",
+          height: "8px",
+          borderRadius: "50%",
+          background: "white",
+          opacity: 0.7,
+          animation: "fly 2s linear infinite"
+        }}
+      />
+      <style>{`
+        @keyframes fly {
+          0% { transform: translate(0,0); opacity:0.7; }
+          25% { transform: translate(120%,50%); opacity:0.3; }
+          50% { transform: translate(100%,120%); opacity:0.7; }
+          75% { transform: translate(-50%,100%); opacity:0.3; }
+          100% { transform: translate(0,0); opacity:0.7; }
+        }
+      `}</style>
+    </button>
+  );
+}
+
+function App() {
+  const handleSubmit = () => { alert("Connected!"); };
+  return <GlassyButton onClick={handleSubmit}>Connect</GlassyButton>;
+}
+
+ReactDOM.createRoot(document.getElementById("glassy-button-container")).render(<App />);
+</script>
+
