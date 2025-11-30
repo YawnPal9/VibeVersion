@@ -2,6 +2,12 @@
 <html lang="en">
 
 <head>
+  <!--/* Adding React + ReactDom (under <head>) to my project to implement my GlassyButton.tsx component*/-->
+  <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <!--/* End of React + ReactDom setup */-->
+
   <title>Dayanah Franklin - Let's Network</title>
   <!-- Meta -->
   <meta charset="utf-8">
@@ -39,12 +45,13 @@
       padding: 20px;
       border-radius: 10px;
       display: inline-block;
-      margin: 80px auto 20px auto;
+      margin: 20px auto;
     }
 
     #emp {
       color: teal;
       font-weight: bold;
+      text-decoration: underline;
     }
 
     #opener {
@@ -62,7 +69,10 @@
       width: 150px;
       height: auto;
       border-radius: 50%;
+      margin-top: 20px;          /* actually pushes image slightly down */
       margin-bottom: 20px;
+      margin-left: auto;
+      margin-right: auto;
     }
 
     input {
@@ -87,6 +97,13 @@
     input[type="submit"]:hover {
       background: darkcyan;
     }
+    .introSection p.subsection-text {
+    font-size: 1em;          /* smaller than h1 and opener */
+    line-height: 1.4em;      
+    max-width: 500px;
+    margin: 10px auto;
+    }
+
   </style>
 </head>
 
